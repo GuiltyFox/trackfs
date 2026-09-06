@@ -86,9 +86,16 @@ StandardError=journal
 [Install]
 WantedBy=multi-user.target
 EOF
+sudo install -D -m 0644 systemd/trackfs.service.d/limits.conf \
+  /etc/systemd/system/trackfs.service.d/limits.conf
+sudo systemctl daemon-reload
 sudo systemctl enable trackfs.service
-sudo systemctl start trackfs.service
+sudo systemctl restart trackfs.service
 ```
+
+`trackfs` はアクティブな FUSE ファイルハンドルごとにファイル記述子を保持します。
+既定の soft limit（1024）で `EMFILE` にならないよう、同梱の drop-in は soft
+limit を 65,536、hard limit を 524,288 に設定します。
 
 
 
